@@ -1,26 +1,41 @@
-# %PACKAGE-NAME%
+# Kaioken Fullstack Boilerplate
 
-Development monorepo template for **%PACKAGE-NAME%**.
+This is a fullstack app powered by:
 
-Get started by running
+- [Hono](https://hono.dev)
+- [Lucia](https://lucia-auth.com)
+- [Drizzle](https://orm.drizzle.team)
+- [Vike](https://vike.dev)
+- [Telefunc](https://telefunc.com)
+- [Kaioken](https://kaioken.dev)
+
+## _Setup_
+
+First, ensure that `DATABASE_URL` is configured in `.env` file.
 
 ```bash
-node setup -p packagename -g mygithubusername -e me@hotmail.com
-# OR
-node setup --package packagename --github mygithubusername --email me@hotmail.com
+DATABASE_URL="db.sqlite"
 ```
 
-## Structure
+Then, run the following commands:
 
-- `.github`
-  - Contains workflows used by GitHub Actions.
-- `packages`
-  - Contains the individual packages managed in the monorepo.
-  - [%PACKAGE-NAME%](https://github.com/%GITHUB-USERNAME%/%PACKAGE-NAME%/blob/main/packages/lib)
-- `sandbox`
-  - Contains example applications and random tidbits.
+```bash
+pnpm install # install dependencies
+pnpm drizzle:generate # a script that executes drizzle-kit generate.
+pnpm drizzle:migrate # a script that executes drizzle-kit migrate.
+```
 
-## Tasks
+> \[!NOTE]
+> The `drizzle-kit generate` command is used to generate SQL migration files based on your Drizzle schema.
+>
+> The `drizzle-kit migrate` command is used to apply the generated migrations to your database.
+>
+> Read more on [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
 
-- Use `make build` to recursively run the build script in each package
-- Use `make test` to recursively run the test script in each package
+You're ready to go!
+
+```bash
+pnpm dev # start the development server
+pnpm build # build the production app
+pnpm preview # preview the production app
+```
