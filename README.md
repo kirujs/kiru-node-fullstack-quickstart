@@ -32,7 +32,20 @@ pnpm drizzle:migrate # a script that executes drizzle-kit migrate.
 >
 > Read more on [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
 
-You're ready to go!
+---
+
+### _OAuth Configuration_
+
+#### See [GitHub documentation](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) to configure your GitHub OAuth app, then set up the following environment variables:
+
+```bash
+GITHUB_CLIENT_ID = #your-github-client-id
+GITHUB_CLIENT_SECRET = #your-github-client-secret
+```
+
+---
+
+### You're ready to go! 🎉
 
 ```bash
 pnpm dev # start the development server

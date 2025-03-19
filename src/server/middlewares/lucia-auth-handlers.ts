@@ -338,11 +338,13 @@ export const luciaGithubCallbackHandler = (() =>
       const tokens = await github.validateAuthorizationCode(code)
       const githubUserResponse = await fetch("https://api.github.com/user", {
         headers: {
-          Authorization: `Bearer ${tokens.accessToken}`,
+          Authorization: `Bearer ${tokens.accessToken()}`,
         },
       })
+      if (!githubUserResponse.ok) {
+        throw new Error("Invalid GitHub user response")
+      }
       const githubUser = (await githubUserResponse.json()) as GitHubUser
-
       const existingAccount: DatabaseOAuthAccount | undefined | null =
         (await drizzleQueries.getExistingAccount(
           context.db,
