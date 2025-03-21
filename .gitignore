@@ -147,3 +147,6 @@ styled-system-studio
 
 ## local sqlite files
 *.db
+
+## pnpm lockfile
+pnpm-lock.yaml
