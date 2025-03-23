@@ -9,7 +9,7 @@ import {
 } from "./lucia-auth"
 import { generateState, OAuth2RequestError } from "arctic"
 import { parse, serialize } from "cookie"
-import * as drizzleQueries from "$/database/queries/lucia-auth"
+import * as drizzleQueries from "$/database/queries/users"
 // TODO: stop using universal-middleware and directly integrate server middlewares instead. (Bati generates boilerplates that use universal-middleware https://github.com/magne4000/universal-middleware to make Bati's internal logic easier. This is temporary and will be removed soon.)
 import {
   type Get,

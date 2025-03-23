@@ -3,7 +3,7 @@ import { Lucia, type Register } from "lucia"
 import { GitHub } from "arctic"
 import { DrizzleSQLiteAdapter } from "@lucia-auth/adapter-drizzle"
 import { dbSqlite } from "$/database"
-import { sessionTable, userTable } from "$/database/schema/lucia-auth"
+import { sessionTable, userTable } from "$/database/schema/users"
 
 /**
  * Polyfill needed if you're using Node.js 18 or below

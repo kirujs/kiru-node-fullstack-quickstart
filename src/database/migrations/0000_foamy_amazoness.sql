@@ -1,3 +1,11 @@
+CREATE TABLE `todos` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`text` text(50) NOT NULL,
+	`completed` integer DEFAULT false NOT NULL,
+	`user_id` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE cascade ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `oauth_accounts` (
 	`provider_id` text NOT NULL,
 	`provider_user_id` integer NOT NULL,
@@ -19,8 +27,4 @@ CREATE TABLE `users` (
 	`password` text
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);--> statement-breakpoint
-CREATE TABLE `todos` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`text` text(50) NOT NULL
-);
+CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);

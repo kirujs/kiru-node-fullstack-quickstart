@@ -27,6 +27,7 @@ declare module "telefunc" {
   namespace Telefunc {
     interface Context {
       db: ReturnType<typeof dbSqlite>
+      user?: User
     }
   }
 }

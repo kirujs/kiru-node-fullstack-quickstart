@@ -1,5 +1,6 @@
 import "./style.css"
 
+import type { User } from "lucia"
 import { Link } from "../components/Link.js"
 import { usePageContext } from "$/app/context/pageContext"
 import { navigate } from "vike/client/router"
@@ -10,22 +11,22 @@ export default function LayoutDefault({
 }: {
   children: JSX.Children
 }) {
+  const { user } = usePageContext()
   return (
     <div className={"flex max-w-5xl m-auto"}>
       <Sidebar>
         <Logo />
         <Link href="/">Welcome</Link>
-        <Link href="/todo">Todo</Link>
+        {user && <Link href="/todo">Todo</Link>}
         <Link href="/star-wars">Data Fetching</Link>
-        <AuthSection />
+        <AuthSection user={user} />
       </Sidebar>
       <Content>{children}</Content>
     </div>
   )
 }
 
-function AuthSection() {
-  const { user } = usePageContext()
+function AuthSection({ user }: { user?: User }) {
   const handleLogout = useCallback(async (e: Event) => {
     e.preventDefault()
     try {

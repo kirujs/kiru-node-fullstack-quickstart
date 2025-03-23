@@ -1,10 +1,16 @@
-import { int, integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  int,
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core"
 
 export const userTable = sqliteTable("users", {
   id: text("id").notNull().primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password"),
-});
+})
 
 export const oauthAccountTable = sqliteTable(
   "oauth_accounts",
@@ -21,9 +27,9 @@ export const oauthAccountTable = sqliteTable(
   (table) => {
     return {
       pk: primaryKey({ columns: [table.providerId, table.providerUserId] }),
-    };
-  },
-);
+    }
+  }
+)
 
 export const sessionTable = sqliteTable("sessions", {
   id: text("id").notNull().primaryKey(),
@@ -34,7 +40,7 @@ export const sessionTable = sqliteTable("sessions", {
       onDelete: "cascade",
     }),
   expiresAt: integer("expires_at").notNull(),
-});
+})
 
-export type UserItem = typeof userTable.$inferSelect;
-export type UserInsert = typeof userTable.$inferInsert;
+export type UserItem = typeof userTable.$inferSelect
+export type UserInsert = typeof userTable.$inferInsert

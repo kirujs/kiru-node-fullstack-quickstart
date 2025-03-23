@@ -2,6 +2,7 @@ import { telefunc } from "telefunc"
 // TODO: stop using universal-middleware and directly integrate server middlewares instead. (Bati generates boilerplates that use universal-middleware https://github.com/magne4000/universal-middleware to make Bati's internal logic easier. This is temporary and will be removed soon.)
 import type { Get, UniversalHandler } from "@universal-middleware/core"
 import type { dbSqlite } from "$/database"
+import { User } from "lucia"
 
 export const telefuncHandler: Get<[], UniversalHandler> =
   () => async (request, context, runtime) => {
@@ -10,7 +11,7 @@ export const telefuncHandler: Get<[], UniversalHandler> =
       method: request.method,
       body: await request.text(),
       context: {
-        ...(context as { db: ReturnType<typeof dbSqlite> }),
+        ...(context as { db: ReturnType<typeof dbSqlite>; user?: User }),
         ...runtime,
       },
     })

@@ -10,10 +10,11 @@ export function TodoList({
 }) {
   const todoItems = useSignal<TodoItem[]>(initialTodoItems)
   const newTodo = useSignal("")
+
   const removeItem = useCallback(async (todoItem: TodoItem) => {
     try {
-      const res = await onDeleteTodo({ id: todoItem.id })
-      if (res.changes === 0) throw new Error("Failed to delete todo")
+      const [res] = await onDeleteTodo(todoItem)
+      if (!res) throw new Error("Failed to delete todo")
       todoItems.value = todoItems.value.filter(
         (item) => item.id !== todoItem.id
       )
@@ -21,10 +22,11 @@ export function TodoList({
       console.error(error)
     }
   }, [])
+
   const saveItem = useCallback(async (todoItem: TodoItem) => {
     try {
-      const res = await onUpdateTodo(todoItem)
-      if (res.changes === 0) throw new Error("Failed to update todo")
+      const [res] = await onUpdateTodo(todoItem)
+      if (!res) throw new Error("Failed to update todo")
       todoItems.value = todoItems.value.map((item) =>
         item.id === todoItem.id ? todoItem : item
       )
@@ -32,16 +34,22 @@ export function TodoList({
       console.error(error)
     }
   }, [])
+
   const addItem = useCallback(async (ev: Event) => {
     ev.preventDefault()
     // Optimistic UI update
     const tempId = -1 - --pendingCount
-    todoItems.value.push({ text: newTodo.value, id: tempId })
+    todoItems.value.push({
+      text: newTodo.value,
+      id: tempId,
+      userId: "__TEMP__",
+      completed: false,
+    })
     try {
-      const res = await onCreateTodo({ text: newTodo.value })
-      if (res.changes === 0) throw new Error("Failed to create todo")
+      const [res] = await onCreateTodo({ text: newTodo.value })
+      if (!res) throw new Error("Failed to create todo")
       todoItems.value = todoItems.value.map((item) =>
-        item.id === tempId ? { ...item, id: Number(res.lastInsertRowid) } : item
+        item.id === tempId ? res : item
       )
       newTodo.value = ""
     } catch (e) {
@@ -91,7 +99,10 @@ const TodoItemView: Kaioken.FC<{
   removeItem: (todoItem: TodoItem) => Promise<void>
   saveItem: (todoItem: TodoItem) => Promise<void>
 }> = ({ todoItem, removeItem, saveItem }) => {
-  const [ref, text] = useModel<HTMLInputElement>(todoItem.text)
+  const [textRef, text] = useModel<HTMLInputElement>(todoItem.text)
+  const [checkedRef, checked] = useModel<HTMLInputElement, boolean>(
+    todoItem.completed
+  )
   const [loading, setLoading] = useState(false)
 
   const handleDelete = useCallback(async () => {
@@ -117,7 +128,8 @@ const TodoItemView: Kaioken.FC<{
 
   return (
     <div className={"flex gap-1"}>
-      <input ref={ref} value={text} />
+      <input ref={textRef} value={text} />
+      <input type="checkbox" ref={checkedRef} checked={checked} />
 
       <div className="flex gap-1">
         <button

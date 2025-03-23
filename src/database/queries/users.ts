@@ -1,5 +1,5 @@
 import { dbSqlite } from "../"
-import { oauthAccountTable, userTable } from "../schema/lucia-auth"
+import { oauthAccountTable, userTable } from "../schema/users"
 import { and, eq } from "drizzle-orm"
 
 export async function getExistingUser(
