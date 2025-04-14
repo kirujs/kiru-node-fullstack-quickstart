@@ -2,9 +2,19 @@ import { telefunc } from "telefunc/vite"
 import tailwindcss from "@tailwindcss/vite"
 import kaioken from "vite-plugin-kaioken"
 import devServer from "@hono/vite-dev-server"
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
 import vike from "vike/plugin"
 import path from "node:path"
+
+const pluginA: Plugin = {
+  name: "a",
+  configureServer(server) {
+    server.middlewares.use("/test/a", (_, res) => {
+      res.setHeader("Content-Type", "text/plain")
+      res.end("a")
+    })
+  },
+}
 
 export default defineConfig({
   publicDir: path.resolve(__dirname, "src/app/public"),
@@ -14,7 +24,9 @@ export default defineConfig({
     },
   },
   plugins: [
+    pluginA,
     vike({}),
+    kaioken({}),
     devServer({
       entry: "./src/server/hono-entry.ts",
       ignoreWatching: [/\.db/],
@@ -29,7 +41,7 @@ export default defineConfig({
       ],
       injectClientScript: false,
     }),
-    kaioken({}),
+
     tailwindcss(),
     telefunc(),
   ],
