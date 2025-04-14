@@ -6,16 +6,6 @@ import { defineConfig, type Plugin } from "vite"
 import vike from "vike/plugin"
 import path from "node:path"
 
-const pluginA: Plugin = {
-  name: "a",
-  configureServer(server) {
-    server.middlewares.use("/test/a", (_, res) => {
-      res.setHeader("Content-Type", "text/plain")
-      res.end("a")
-    })
-  },
-}
-
 export default defineConfig({
   publicDir: path.resolve(__dirname, "src/app/public"),
   resolve: {
@@ -24,7 +14,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    pluginA,
     vike({}),
     kaioken({}),
     devServer({
@@ -49,8 +38,5 @@ export default defineConfig({
     target: "es2022",
     sourcemap: false,
     outDir: "dist",
-  },
-  esbuild: {
-    sourcemap: false,
   },
 })
