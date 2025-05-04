@@ -20,10 +20,10 @@
     "better-sqlite3": "^11.9.1",
     "cookie": "^1.0.2",
     "dotenv": "^16.5.0",
-    "drizzle-kit": "^0.31.0",
+    "drizzle-kit": "^0.31.1",
     "drizzle-orm": "^0.43.1",
     "hono": "^4.7.8",
-    "kaioken": "^0.38.1",
+    "kaioken": "^0.38.2",
     "lucia": "^3.2.2",
     "telefunc": "^0.2.5",
     "vike": "^0.4.229"
@@ -39,6 +39,6 @@
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vite": "^6.3.4",
-    "vite-plugin-kaioken": "^0.18.1"
+    "vite-plugin-kaioken": "^0.18.2"
   }
 }
