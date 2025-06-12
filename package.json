@@ -12,33 +12,33 @@
     "drizzle:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@hono/node-server": "^1.14.1",
+    "@hono/node-server": "^1.14.4",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
-    "@universal-middleware/core": "^0.4.7",
-    "@universal-middleware/hono": "^0.4.10",
-    "arctic": "^3.6.1",
+    "@universal-middleware/core": "^0.4.8",
+    "@universal-middleware/hono": "^0.4.14",
+    "arctic": "^3.7.0",
     "better-sqlite3": "^11.10.0",
     "cookie": "^1.0.2",
     "dotenv": "^16.5.0",
     "drizzle-kit": "^0.31.1",
-    "drizzle-orm": "^0.43.1",
-    "hono": "^4.7.9",
-    "kaioken": "^0.39.0",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.7.11",
+    "kaioken": "^0.40.4",
     "lucia": "^3.2.2",
-    "telefunc": "^0.2.5",
-    "vike": "^0.4.229"
+    "telefunc": "^0.2.7",
+    "vike": "^0.4.231"
   },
   "devDependencies": {
-    "@hono/vite-dev-server": "^0.19.0",
-    "@tailwindcss/vite": "^4.1.6",
+    "@hono/vite-dev-server": "^0.19.1",
+    "@tailwindcss/vite": "^4.1.10",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.15.18",
+    "@types/node": "^24.0.1",
     "cross-env": "^7.0.3",
-    "daisyui": "^5.0.35",
-    "tailwindcss": "^4.1.6",
-    "tsx": "^4.19.4",
+    "daisyui": "^5.0.43",
+    "tailwindcss": "^4.1.10",
+    "tsx": "^4.20.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
-    "vite-plugin-kaioken": "^0.19.0"
+    "vite-plugin-kaioken": "^0.20.3"
   }
 }
