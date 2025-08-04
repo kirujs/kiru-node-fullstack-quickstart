@@ -1,8 +1,6 @@
-import { telefunc } from "telefunc"
-// TODO: stop using universal-middleware and directly integrate server middlewares instead. (Bati generates boilerplates that use universal-middleware https://github.com/magne4000/universal-middleware to make Bati's internal logic easier. This is temporary and will be removed soon.)
+import { Telefunc, telefunc } from "telefunc"
 import type { Get, UniversalHandler } from "@universal-middleware/core"
-import type { dbSqlite } from "$/database"
-import { User } from "lucia"
+import type { D1Database } from "@cloudflare/workers-types"
 
 export const telefuncHandler: Get<[], UniversalHandler> =
   () => async (request, context, runtime) => {
@@ -11,11 +9,14 @@ export const telefuncHandler: Get<[], UniversalHandler> =
       method: request.method,
       body: await request.text(),
       context: {
-        ...(context as { db: ReturnType<typeof dbSqlite>; user?: User }),
-        ...runtime,
+        ...(context as Telefunc.Context),
+        ...(runtime as {
+          runtime: "workerd"
+          adapter: "cloudflare-pages"
+          env?: { DB: D1Database }
+        }),
       },
     })
-
     const { body, statusCode, contentType } = httpResponse
     return new Response(body, {
       status: statusCode,

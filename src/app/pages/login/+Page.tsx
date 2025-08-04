@@ -1,115 +1,171 @@
-import "./style.css"
-import { ElementProps, useState } from "kaioken"
-import { navigate } from "vike/client/router"
+import { Derive, ElementProps, unwrap } from "kaioken"
+import { className as cls } from "kaioken/utils"
+import { Button } from "$/app/components/Button"
+import { Input } from "$/app/components/Input"
+import { GithubIcon } from "$/app/components/icons/GithubIcon"
+import { Loader } from "$/app/components/Loader"
 
-type ValidationError = {
-  username: string | null
-  password: string | null
-  invalid?: string
-}
+import { formMode, formState } from "./state"
+import {
+  handleForgotPassword,
+  handleGithubSignIn,
+  handleSignIn,
+  handleSignUp,
+} from "./actions"
 
 export default function Page() {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  })
-
-  const [error, setError] = useState<ValidationError>({
-    username: null,
-    password: null,
-  })
-
-  const handleOnChange: ElementProps<"input">["oninput"] = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-  const handleOnSubmit = async (e: Event, action: "login" | "signup") => {
-    e.preventDefault()
-    try {
-      const response = await fetch(`/api/${action}`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: Record<string, any> = await response.json()
-      if ("error" in result) {
-        console.error("A validation error has occurred :", result.error)
-        setError(result.error)
-      } else {
-        await navigate("/")
-      }
-    } catch (err) {
-      console.error("An unknown error has occurred :", err)
+  const handleSubmit = async (event: Event) => {
+    event.preventDefault()
+    if (formMode.value === "login") {
+      handleSignIn()
+    } else {
+      handleSignUp()
     }
   }
 
   return (
-    <div id="login" className="form">
-      <div className="form-content">
-        <header>Login / Sign Up</header>
-        <form>
-          <div className="field">
-            <input
-              id="username"
-              type="text"
-              name="username"
-              value={formData.username}
-              oninput={handleOnChange}
-              placeholder="Username"
-              autocomplete={"username" as any}
+    <div className="w-full grow flex items-center justify-center">
+      <div className="w-xs max-w-lg p-4 rounded-lg flex flex-col gap-4 justify-center bg-white/5 border border-white/10">
+        <div className="flex items-center justify-between relative">
+          <Derive from={formMode}>
+            {(mode) => (
+              <>
+                <h1 className="text-2xl font-bold">
+                  {mode === "login" ? "Login" : "Sign Up"}
+                </h1>
+                {mode === "login" ? (
+                  <button
+                    className="text-neutral-300 hover:text-white hover:underline"
+                    onclick={() => (formMode.value = "signup")}
+                  >
+                    Sign Up
+                  </button>
+                ) : (
+                  <button
+                    className="text-neutral-300 hover:text-white hover:underline"
+                    onclick={() => (formMode.value = "login")}
+                  >
+                    Login
+                  </button>
+                )}
+              </>
+            )}
+          </Derive>
+        </div>
+        <form onsubmit={handleSubmit} className="flex flex-col gap-4">
+          <Derive from={formMode}>
+            {(mode) =>
+              mode === "signup" && (
+                <FormItem>
+                  <FormItemLabel htmlFor="name">Name</FormItemLabel>
+                  <Input
+                    id="name"
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    autocomplete={"name" as any}
+                    bind:value={formState.name}
+                    required
+                  />
+                </FormItem>
+              )
+            }
+          </Derive>
+          <FormItem>
+            <FormItemLabel htmlFor="email">Email</FormItemLabel>
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="me@example.com"
+              autocomplete={"email" as any}
+              bind:value={formState.email}
+              required
             />
-          </div>
-          {error.username && (
-            <span className="field-error">{error.username}</span>
-          )}
-
-          <div className="field">
-            <input
+          </FormItem>
+          <FormItem>
+            <div className="flex items-center justify-between">
+              <FormItemLabel htmlFor="password">Password</FormItemLabel>
+              <Derive from={formMode}>
+                {(mode) =>
+                  mode === "login" && (
+                    <button
+                      type="button"
+                      onclick={handleForgotPassword}
+                      className="text-neutral-400 hover:text-white hover:underline text-xs"
+                    >
+                      Forgot your password?
+                    </button>
+                  )
+                }
+              </Derive>
+            </div>
+            <Input
               id="password"
               type="password"
               name="password"
-              value={formData.password}
-              oninput={handleOnChange}
-              placeholder="Password"
+              bind:value={formState.password}
+              required
             />
-          </div>
-          {error.password && (
-            <span className="field-error">{error.password}</span>
-          )}
-          {error.invalid && (
-            <span className="field-error">{error.invalid}</span>
-          )}
-
-          <div className="field button-group">
-            <button
-              type="button"
-              className="button-field signup-button"
-              onclick={(e) => handleOnSubmit(e, "signup")}
-            >
-              Sign Up
-            </button>
-            <button
+          </FormItem>
+          <div className="flex flex-col gap-2">
+            <Button
               type="submit"
-              className="button-field login-button"
-              onclick={(e) => handleOnSubmit(e, "login")}
+              variant="primary"
+              disabled={formState.submitting}
             >
-              Login
-            </button>
+              <Derive
+                from={formMode}
+                children={(mode) => (mode === "login" ? "Login" : "Sign Up")}
+              />
+              <Derive
+                from={formState.submitting}
+                children={(submitting) => submitting && <Loader />}
+              />
+            </Button>
+            <ProviderButton onclick={handleGithubSignIn}>
+              <span>Login with Github</span>
+              <GithubIcon className="w-4 h-4" />
+            </ProviderButton>
           </div>
+          <Derive from={formState.error}>
+            {(error) => error && <i className="text-red-400">{error}</i>}
+          </Derive>
         </form>
       </div>
-
-      <div className="media-options">
-        <a href="/api/login/github" className="field github">
-          <img
-            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA0OTYgNTEyJz48IS0tIUZvbnQgQXdlc29tZSBGcmVlIDYuNi4wIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlL2ZyZWUgQ29weXJpZ2h0IDIwMjQgRm9udGljb25zLCBJbmMuLS0+PHBhdGggZD0nTTE2NS45IDM5Ny40YzAgMi0yLjMgMy42LTUuMiAzLjYtMy4zIC4zLTUuNi0xLjMtNS42LTMuNiAwLTIgMi4zLTMuNiA1LjItMy42IDMtLjMgNS42IDEuMyA1LjYgMy42em0tMzEuMS00LjVjLS43IDIgMS4zIDQuMyA0LjMgNC45IDIuNiAxIDUuNiAwIDYuMi0ycy0xLjMtNC4zLTQuMy01LjJjLTIuNi0uNy01LjUgLjMtNi4yIDIuM3ptNDQuMi0xLjdjLTIuOSAuNy00LjkgMi42LTQuNiA0LjkgLjMgMiAyLjkgMy4zIDUuOSAyLjYgMi45LS43IDQuOS0yLjYgNC42LTQuNi0uMy0xLjktMy0zLjItNS45LTIuOXpNMjQ0LjggOEMxMDYuMSA4IDAgMTEzLjMgMCAyNTJjMCAxMTAuOSA2OS44IDIwNS44IDE2OS41IDIzOS4yIDEyLjggMi4zIDE3LjMtNS42IDE3LjMtMTIuMSAwLTYuMi0uMy00MC40LS4zLTYxLjQgMCAwLTcwIDE1LTg0LjctMjkuOCAwIDAtMTEuNC0yOS4xLTI3LjgtMzYuNiAwIDAtMjIuOS0xNS43IDEuNi0xNS40IDAgMCAyNC45IDIgMzguNiAyNS44IDIxLjkgMzguNiA1OC42IDI3LjUgNzIuOSAyMC45IDIuMy0xNiA4LjgtMjcuMSAxNi0zMy43LTU1LjktNi4yLTExMi4zLTE0LjMtMTEyLjMtMTEwLjUgMC0yNy41IDcuNi00MS4zIDIzLjYtNTguOS0yLjYtNi41LTExLjEtMzMuMyAyLjYtNjcuOSAyMC45LTYuNSA2OSAyNyA2OSAyNyAyMC01LjYgNDEuNS04LjUgNjIuOC04LjVzNDIuOCAyLjkgNjIuOCA4LjVjMCAwIDQ4LjEtMzMuNiA2OS0yNyAxMy43IDM0LjcgNS4yIDYxLjQgMi42IDY3LjkgMTYgMTcuNyAyNS44IDMxLjUgMjUuOCA1OC45IDAgOTYuNS01OC45IDEwNC4yLTExNC44IDExMC41IDkuMiA3LjkgMTcgMjIuOSAxNyA0Ni40IDAgMzMuNy0uMyA3NS40LS4zIDgzLjYgMCA2LjUgNC42IDE0LjQgMTcuMyAxMi4xQzQyOC4yIDQ1Ny44IDQ5NiAzNjIuOSA0OTYgMjUyIDQ5NiAxMTMuMyAzODMuNSA4IDI0NC44IDh6TTk3LjIgMzUyLjljLTEuMyAxLTEgMy4zIC43IDUuMiAxLjYgMS42IDMuOSAyLjMgNS4yIDEgMS4zLTEgMS0zLjMtLjctNS4yLTEuNi0xLjYtMy45LTIuMy01LjItMXptLTEwLjgtOC4xYy0uNyAxLjMgLjMgMi45IDIuMyAzLjkgMS42IDEgMy42IC43IDQuMy0uNyAuNy0xLjMtLjMtMi45LTIuMy0zLjktMi0uNi0zLjYtLjMtNC4zIC43em0zMi40IDM1LjZjLTEuNiAxLjMtMSA0LjMgMS4zIDYuMiAyLjMgMi4zIDUuMiAyLjYgNi41IDEgMS4zLTEuMyAuNy00LjMtMS4zLTYuMi0yLjItMi4zLTUuMi0yLjYtNi41LTF6bS0xMS40LTE0LjdjLTEuNiAxLTEuNiAzLjYgMCA1LjkgMS42IDIuMyA0LjMgMy4zIDUuNiAyLjMgMS42LTEuMyAxLjYtMy45IDAtNi4yLTEuNC0yLjMtNC0zLjMtNS42LTJ6Jy8+PC9zdmc+"
-            className="github-icon"
-            alt=""
-          />
-          <span>Login with Github</span>
-        </a>
-      </div>
     </div>
+  )
+}
+
+function FormItemLabel(props: ElementProps<"label">) {
+  return (
+    <label
+      className={cls(unwrap(props.className), "text-neutral-300 font-medium")}
+      {...props}
+    />
+  )
+}
+
+function FormItem(props: ElementProps<"div">) {
+  return (
+    <div
+      className={cls(unwrap(props.className), "flex flex-col gap-1")}
+      {...props}
+    />
+  )
+}
+
+function ProviderButton(props: ElementProps<"button">) {
+  return (
+    <button
+      disabled={formState.submitting}
+      className={cls(
+        unwrap(props.className),
+        "flex gap-2 items-center justify-center w-full",
+        "bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-neutral-300",
+        "hover:bg-white/10 transition-all disabled:opacity-50"
+      )}
+      {...props}
+    />
   )
 }

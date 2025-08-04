@@ -1,39 +1,29 @@
 import "dotenv/config"
-import {
-  luciaAuthContextMiddleware,
-  luciaAuthCookieMiddleware,
-  luciaAuthLoginHandler,
-  luciaAuthLogoutHandler,
-  luciaAuthSignupHandler,
-  luciaCsrfMiddleware,
-  luciaDbMiddleware,
-  luciaGithubCallbackHandler,
-  luciaGithubLoginHandler,
-} from "./middlewares/lucia-auth-handlers"
-
-import { vikeHandler } from "./middlewares/vike-handler"
-import { telefuncHandler } from "./middlewares/telefunc-handler"
 import { Hono } from "hono"
+import {
+  betterAuthDbMiddleware,
+  betterAuthSessionMiddleware,
+  betterAuthHandlers,
+} from "./middleware/better-auth-handlers"
 import { createHandler, createMiddleware } from "@universal-middleware/hono"
-import { dbMiddleware } from "./middlewares/db-middleware"
+import { vikeHandler } from "./middleware/vike-handler"
+import { telefuncHandler } from "./middleware/telefunc-handler"
+import { dbMiddleware } from "./middleware/db-middleware"
 
 const app = new Hono()
 
 app.use(createMiddleware(dbMiddleware)())
 
-app.use(createMiddleware(luciaDbMiddleware)())
-app.use(createMiddleware(luciaCsrfMiddleware)())
-app.use(createMiddleware(luciaAuthContextMiddleware)())
-app.use(createMiddleware(luciaAuthCookieMiddleware)())
+app.use(createMiddleware(betterAuthDbMiddleware)())
 
-app.post("/api/signup", createHandler(luciaAuthSignupHandler)())
-app.post("/api/login", createHandler(luciaAuthLoginHandler)())
-app.post("/api/logout", createHandler(luciaAuthLogoutHandler)())
-app.get("/api/login/github", createHandler(luciaGithubLoginHandler)())
-app.get(
-  "/api/login/github/callback",
-  createHandler(luciaGithubCallbackHandler)()
-)
+app.use(createMiddleware(betterAuthSessionMiddleware)())
+
+/**
+ * Auth.js route
+ * @link {@see https://authjs.dev/getting-started/installation}
+ **/
+//app.use("/api/auth/**", createHandler(authjsHandler)())
+app.on(["POST", "GET"], "/api/auth/**", createHandler(betterAuthHandlers)())
 
 app.post("/_telefunc", createHandler(telefuncHandler)())
 

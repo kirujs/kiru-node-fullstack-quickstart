@@ -1,6 +1,6 @@
 import { createContext, useContext } from "kaioken"
 
-export { usePageContext, PageContextProvider }
+export { usePageContext, useData, PageContextProvider }
 
 const PageContext = createContext<Vike.PageContext & { isClient: boolean }>(
   null as any
@@ -24,4 +24,8 @@ function PageContextProvider({
 
 function usePageContext() {
   return useContext(PageContext)
+}
+
+function useData<T>() {
+  return useContext(PageContext).data as T
 }

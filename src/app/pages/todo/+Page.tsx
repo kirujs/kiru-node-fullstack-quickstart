@@ -1,6 +1,6 @@
 import type { Data } from "./+data"
 import { TodoList } from "./TodoList.js"
-import { useData } from "$/app/context/dataContext"
+import { useData } from "$/app/context/pageContext"
 
 export default function Page() {
   const data = useData<Data>()

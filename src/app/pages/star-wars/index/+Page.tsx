@@ -1,4 +1,4 @@
-import { useData } from "$/app/context/dataContext.jsx"
+import { useData } from "$/app/context/pageContext"
 import type { Data } from "./+data.js"
 
 export default function Page() {

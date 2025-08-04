@@ -1,25 +1,26 @@
 import "./style.css"
-
-import type { User } from "lucia"
-import { Link } from "../components/Link.js"
-import { usePageContext } from "$/app/context/pageContext"
+import { useSignal } from "kaioken"
 import { navigate } from "vike/client/router"
-import { useCallback } from "kaioken"
+import { type User } from "better-auth"
+
+import { usePageContext } from "../context/pageContext"
+import { authClient } from "../global/auth-client"
+import { Link } from "../components/Link.js"
 
 export default function LayoutDefault({
   children,
 }: {
   children: JSX.Children
 }) {
-  const { user } = usePageContext()
+  const { session } = usePageContext()
   return (
     <div className={"flex max-w-5xl m-auto"}>
       <Sidebar>
         <Logo />
         <Link href="/">Welcome</Link>
-        {user && <Link href="/todo">Todo</Link>}
+        {session && <Link href="/todo">Todo</Link>}
         <Link href="/star-wars">Data Fetching</Link>
-        <AuthSection user={user} />
+        <AuthSection user={session?.user} />
       </Sidebar>
       <Content>{children}</Content>
     </div>
@@ -27,22 +28,30 @@ export default function LayoutDefault({
 }
 
 function AuthSection({ user }: { user?: User }) {
-  const handleLogout = useCallback(async (e: Event) => {
-    e.preventDefault()
-    try {
-      await fetch("/api/logout", { method: "POST" })
-      navigate("/")
-    } catch (err) {
-      console.error("An unknown error has occurred :", err)
-    }
-  }, [])
+  const signingOut = useSignal(false)
   if (user) {
     return (
       <div className="flex w-full p-2 my-2 flex-col border-2 border-neutral-300">
-        <span className="font-bold">Logged in as: {user.username}</span>
+        <span className="font-bold">Logged in as: {user.name}</span>
 
-        <Link href="#" onclick={handleLogout}>
-          Logout
+        <Link
+          href="#"
+          onclick={() => {
+            signingOut.value = true
+            authClient
+              .signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    navigate("/")
+                  },
+                },
+              })
+              .finally(() => {
+                signingOut.value = false
+              })
+          }}
+        >
+          {signingOut.value ? "Signing out..." : "Logout"}
         </Link>
       </div>
     )
@@ -64,8 +73,8 @@ function Sidebar({ children }: { children: JSX.Children }) {
 
 function Content({ children }: { children: JSX.Children }) {
   return (
-    <div id="page-container">
-      <div id="page-content" className={"p-5 pb-12 min-h-screen"}>
+    <div id="page-container" className="w-full">
+      <div id="page-content" className="p-5 pb-12 min-h-screen flex flex-col">
         {children}
       </div>
     </div>

@@ -1,26 +1,45 @@
-# Kaioken Fullstack Boilerplate
+## Contents
 
-This is a fullstack app powered by:
+- [_Cloudflare D1_](#cloudflare-d1)
+  - [Setup](#setup)
 
-- [Hono](https://hono.dev)
-- [Lucia](https://lucia-auth.com)
-- [Drizzle](https://orm.drizzle.team)
-- [Vike](https://vike.dev)
-- [Telefunc](https://telefunc.com)
-- [Kaioken](https://kaioken.dev)
+- [_Drizzle_](#drizzle)
 
-## _Setup_
+- [_Better Auth_](#better-auth)
 
-First, ensure that `DATABASE_URL` is configured in `.env` file.
+- [_Kaioken+Vike_](#kaioken)
+  - [`/pages/+config.ts`](#pagesconfigts)
+  - [Routing](#routing)
+  - [`/pages/_error/+Page.jsx`](#pages_errorpagejsx)
+  - [SSR](#ssr)
+  - [HTML Streaming](#html-streaming)
 
-```bash
-DATABASE_URL="db.sqlite"
+## _Cloudflare D1_
+
+### Setup
+
+Create a D1 database with the following command:
+
+```sh
+wrangler d1 create <your-db-name>
 ```
 
-Then, run the following commands:
+Then, copy the output to `wrangler.toml`.
+
+Finally, update the `d1:migrate` script (in `package.json`) to replace `YOUR_DATABASE_NAME`, and execute it.
+
+> \[!NOTE]
+> For reference, a good database name is:
+>
+> - Typically a combination of ASCII characters, shorter than 32 characters, and uses dashes (-) instead of spaces.
+> - Descriptive of the use-case and environment. For example, “staging-db-web” or “production-db-backend”.
+> - Only used for describing the database, and is not directly referenced in code.
+
+## _Drizzle_
+
+Run the following commands to create the database:
 
 ```bash
-pnpm install # install dependencies
 pnpm drizzle:generate # a script that executes drizzle-kit generate.
 pnpm drizzle:migrate # a script that executes drizzle-kit migrate.
 ```
@@ -29,26 +48,43 @@ pnpm drizzle:migrate # a script that executes drizzle-kit migrate.
 > The `drizzle-kit generate` command is used to generate SQL migration files based on your Drizzle schema.
 >
 > The `drizzle-kit migrate` command is used to apply the generated migrations to your database.
->
-> Read more on [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
 
----
+Read more on [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
 
-### _OAuth Configuration_
+## _Better Auth_
 
-#### See [GitHub documentation](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app) to configure your GitHub OAuth app, then set up the following environment variables:
+Better Auth is a library for authentication and authorization. It's already wired up with the app, so you can use it out of the box - just set up the `AUTH_SECRET` & `BASE_URL` environment variables.
 
-```bash
-GITHUB_CLIENT_ID = #your-github-client-id
-GITHUB_CLIENT_SECRET = #your-github-client-secret
-```
+GitHub authentication is also set up out of the box - just create a GitHub app and set up the `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` environment variables.
 
----
+## _Kaioken+Vike_
 
-### You're ready to go! 🎉
+This app is ready to start. It's powered by [Vike](https://vike.dev) and [Kaioken](https://kaioken.dev).
 
-```bash
-pnpm dev # start the development server
-pnpm build # build the production app
-pnpm preview # preview the production app
-```
+### `/pages/+config.ts`
+
+Such `+` files are [the interface](https://vike.dev/config) between Vike and your code. It defines:
+
+- A default [`<Layout>` component](https://vike.dev/Layout) (that wraps your [`<Page>` components](https://vike.dev/Page)).
+- A default [`title`](https://vike.dev/title).
+- Global [`<head>` tags](https://vike.dev/head-tags).
+
+### Routing
+
+[Vike's built-in router](https://vike.dev/routing) lets you choose between:
+
+- [Filesystem Routing](https://vike.dev/filesystem-routing) (the URL of a page is determined based on where its `+Page.jsx` file is located on the filesystem)
+- [Route Strings](https://vike.dev/route-string)
+- [Route Functions](https://vike.dev/route-function)
+
+### `/pages/_error/+Page.jsx`
+
+The [error page](https://vike.dev/error-page) which is rendered when errors occur.
+
+### SSR
+
+SSR is enabled by default. You can [disable it](https://vike.dev/ssr) for all your pages or only for some pages.
+
+### HTML Streaming
+
+You can enable/disable [HTML streaming](https://vike.dev/stream) for all your pages, or only for some pages while still using it for others.

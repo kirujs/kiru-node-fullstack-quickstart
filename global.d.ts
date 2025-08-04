@@ -1,7 +1,6 @@
-import { User } from "lucia"
-import { dbSqlite } from "./database/drizzle/db"
-
-//https://vike.dev/pageContext#custom
+import { D1Database } from "@cloudflare/workers-types"
+import { betterAuth, Session, User } from "better-auth"
+import { dbD1 } from "./database/drizzle/db"
 
 declare global {
   namespace Vike {
@@ -26,8 +25,25 @@ declare global {
 declare module "telefunc" {
   namespace Telefunc {
     interface Context {
-      db: ReturnType<typeof dbSqlite>
-      user?: User
+      db: ReturnType<typeof dbD1>
+      betterAuth: ReturnType<typeof betterAuth>
+      session: null | {
+        session: Session
+        user: User
+      }
+    }
+  }
+}
+
+declare global {
+  namespace Universal {
+    interface Context {
+      db: ReturnType<typeof dbD1>
+      betterAuth: ReturnType<typeof betterAuth>
+      session: null | {
+        session: Session
+        user: User
+      }
     }
   }
 }
@@ -35,7 +51,11 @@ declare module "telefunc" {
 declare global {
   namespace Vike {
     interface PageContext {
-      user?: User
+      db: ReturnType<typeof dbD1>
+      session: null | {
+        session: Session
+        user: User
+      }
     }
   }
 }
@@ -43,9 +63,14 @@ declare global {
 declare global {
   namespace Vike {
     interface PageContext {
-      db: ReturnType<typeof dbSqlite>
+      env: Env
     }
   }
+}
+
+// Cloudflare typings
+interface Env {
+  DB: D1Database
 }
 
 export {}

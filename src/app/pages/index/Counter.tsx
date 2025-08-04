@@ -1,15 +1,12 @@
-import { useState } from "kaioken"
+import { useSignal } from "kaioken"
+import { Button } from "$/app/components/Button"
 
 export function Counter() {
-  const [count, setCount] = useState(0)
+  const count = useSignal(0)
 
   return (
-    <button
-      type="button"
-      className={"btn"}
-      onclick={() => setCount((count) => count + 1)}
-    >
-      Counter {count}
-    </button>
+    <Button type="button" onclick={() => count.value++}>
+      Click me! ({count})
+    </Button>
   )
 }

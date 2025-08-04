@@ -1,8 +1,8 @@
 // /pages/utils.js
 // Environment: server & client
 
-import { getUseConfigHookInternal } from "$/app/hooks/useConfig"
 import type { PageContext } from "vike/types"
+import { getUseConfigHookInternal } from "$/app/hooks/useConfig"
 
 export { getTitle }
 

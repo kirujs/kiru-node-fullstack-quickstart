@@ -1,18 +1,22 @@
-import { useCallback, useModel, useSignal, useState } from "kaioken"
+import { useCallback, useComputed, useSignal } from "kaioken"
 import { onCreateTodo, onDeleteTodo, onUpdateTodo } from "./TodoList.telefunc"
-import type { TodoItem } from "$/database/schema/todos"
+import type { TodoItem } from "$/database/drizzle/schema/todos"
 
-let pendingCount = 0
+type OptimisticTodoItem = TodoItem & { optimistic?: boolean }
+
 export function TodoList({
   initialTodoItems,
 }: {
   initialTodoItems: TodoItem[]
 }) {
-  const todoItems = useSignal<TodoItem[]>(initialTodoItems)
+  const todoItems = useSignal<OptimisticTodoItem[]>(initialTodoItems)
   const newTodo = useSignal("")
 
   const removeItem = useCallback(async (todoItem: TodoItem) => {
     try {
+      todoItems.value = todoItems.value.filter(
+        (item) => item.id !== todoItem.id
+      )
       const [res] = await onDeleteTodo(todoItem)
       if (!res) throw new Error("Failed to delete todo")
       todoItems.value = todoItems.value.filter(
@@ -20,6 +24,9 @@ export function TodoList({
       )
     } catch (error) {
       console.error(error)
+      todoItems.value = todoItems.value.map((item) =>
+        item.id === todoItem.id ? todoItem : item
+      )
     }
   }, [])
 
@@ -38,13 +45,16 @@ export function TodoList({
   const addItem = useCallback(async (ev: Event) => {
     ev.preventDefault()
     // Optimistic UI update
-    const tempId = -1 - --pendingCount
-    todoItems.value.push({
-      text: newTodo.value,
-      id: tempId,
-      userId: "__TEMP__",
-      completed: false,
-    })
+    const tempId = crypto.randomUUID()
+    todoItems.value = [
+      ...todoItems.value,
+      {
+        text: newTodo.value,
+        id: tempId,
+        userId: "__TEMP__",
+        optimistic: true,
+      },
+    ]
     try {
       const [res] = await onCreateTodo({ text: newTodo.value })
       if (!res) throw new Error("Failed to create todo")
@@ -56,8 +66,6 @@ export function TodoList({
       console.error(e)
       // rollback
       todoItems.value = todoItems.value.filter((item) => item.id !== tempId)
-    } finally {
-      pendingCount++
     }
   }, [])
 
@@ -95,48 +103,51 @@ export function TodoList({
 }
 
 const TodoItemView: Kaioken.FC<{
-  todoItem: TodoItem
+  todoItem: OptimisticTodoItem
   removeItem: (todoItem: TodoItem) => Promise<void>
   saveItem: (todoItem: TodoItem) => Promise<void>
 }> = ({ todoItem, removeItem, saveItem }) => {
-  const [textRef, text] = useModel<HTMLInputElement>(todoItem.text)
-  const [checkedRef, checked] = useModel<HTMLInputElement, boolean>(
-    todoItem.completed
-  )
-  const [loading, setLoading] = useState(false)
+  const itemText = useSignal(todoItem.text)
+  const isActionInProgress = useSignal(false)
 
   const handleDelete = useCallback(async () => {
-    setLoading(true)
+    isActionInProgress.value = true
     try {
       await removeItem(todoItem)
     } catch (error) {
       console.error(error)
-      setLoading(false)
+    } finally {
+      isActionInProgress.value = false
     }
   }, [])
 
   const handleSave = useCallback(async () => {
-    setLoading(true)
+    isActionInProgress.value = true
     try {
-      await saveItem({ ...todoItem, text })
+      await saveItem({ ...todoItem, text: itemText.peek() })
     } catch (error) {
       console.error(error)
     } finally {
-      setLoading(false)
+      isActionInProgress.value = false
     }
-  }, [text])
+  }, [])
+
+  const saveDisabled = useComputed(() => {
+    const inProgress = isActionInProgress.value
+    const text = itemText.value
+    return todoItem.text === text || inProgress
+  })
 
   return (
-    <div className={"flex gap-1"}>
-      <input ref={textRef} value={text} />
-      <input type="checkbox" ref={checkedRef} checked={checked} />
+    <div className={`flex gap-1 ${todoItem.optimistic ? "opacity-50" : ""}`}>
+      <input bind:value={itemText} disabled={isActionInProgress} />
 
       <div className="flex gap-1">
         <button
           onclick={handleDelete}
           type="button"
           className="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded"
-          disabled={loading}
+          disabled={isActionInProgress}
         >
           delete
         </button>
@@ -144,7 +155,7 @@ const TodoItemView: Kaioken.FC<{
           onclick={handleSave}
           type="button"
           className="bg-green-500 hover:bg-green-700 text-white text-sm font-bold py-1 px-2 rounded"
-          disabled={todoItem.text === text || loading}
+          disabled={saveDisabled}
         >
           save
         </button>

@@ -1,10 +1,11 @@
+import path from "path"
+import { pages } from "vike-cloudflare"
 import { telefunc } from "telefunc/vite"
 import tailwindcss from "@tailwindcss/vite"
 import kaioken from "vite-plugin-kaioken"
 import devServer from "@hono/vite-dev-server"
-import { defineConfig, type Plugin } from "vite"
+import { defineConfig } from "vite"
 import vike from "vike/plugin"
-import path from "node:path"
 
 export default defineConfig({
   publicDir: path.resolve(__dirname, "src/app/public"),
@@ -14,11 +15,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    vike({}),
-    kaioken({}),
+    vike(),
+    kaioken(),
     devServer({
       entry: "./src/server/hono-entry.ts",
-      ignoreWatching: [/\.db/],
       exclude: [
         /^\/@.+$/,
         /.*\.(ts|tsx|vue)($|\?)/,
@@ -30,13 +30,19 @@ export default defineConfig({
       ],
       injectClientScript: false,
     }),
-
     tailwindcss(),
     telefunc(),
+    pages({
+      server: {
+        kind: "hono",
+        entry: "./src/server/hono-entry.ts",
+      },
+    }),
   ],
   build: {
+    rollupOptions: {
+      external: ["wrangler"],
+    },
     target: "es2022",
-    sourcemap: false,
-    outDir: "dist",
   },
 })

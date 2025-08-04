@@ -6,16 +6,13 @@ import type { Movie, MovieDetails } from "../types.js"
 export type Data = Awaited<ReturnType<typeof data>>
 
 export const data = async () => {
-  // https://vike.dev/useConfig
-  const config = useConfig()
-
+  const setConfig = useConfig()
   const response = await fetch(
     "https://brillout.github.io/star-wars/api/films.json"
   )
   const moviesData = (await response.json()) as MovieDetails[]
 
-  config({
-    // Set <title>
+  setConfig({
     title: `${moviesData.length} Star Wars Movies`,
   })
 

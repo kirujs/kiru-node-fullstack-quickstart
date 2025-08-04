@@ -2,7 +2,7 @@ import type { Config } from "vike/types"
 
 export default {
   clientRouting: true,
-  passToClient: ["_configFromHook", "user"],
+  passToClient: ["_configFromHook", "session"],
   meta: {
     title: {
       env: { server: true, client: true },
