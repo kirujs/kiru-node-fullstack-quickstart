@@ -28,15 +28,15 @@
     "vike-cloudflare": "0.1.7"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250803.0",
-    "@hono/vite-dev-server": "^0.20.0",
+    "@cloudflare/workers-types": "^4.20250805.0",
+    "@hono/vite-dev-server": "^0.20.1",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^24.2.0",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.2",
     "vite": "^7.0.6",
-    "vite-plugin-kaioken": "^0.22.0",
-    "wrangler": "^4.27.0"
+    "vite-plugin-kaioken": "^0.23.0",
+    "wrangler": "^4.28.0"
   }
 }
