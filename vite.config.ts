@@ -1,10 +1,10 @@
 import path from "path"
-import { pages } from "vike-cloudflare"
-import { telefunc } from "telefunc/vite"
-import tailwindcss from "@tailwindcss/vite"
-import kaioken from "vite-plugin-kaioken"
 import { defineConfig } from "vite"
 import vike from "vike/plugin"
+import kaioken from "vite-plugin-kaioken"
+import tailwindcss from "@tailwindcss/vite"
+import { telefunc } from "telefunc/vite"
+import { pages } from "vike-cloudflare"
 
 export default defineConfig({
   publicDir: path.resolve(__dirname, "src/app/public"),

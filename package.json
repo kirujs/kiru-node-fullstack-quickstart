@@ -5,7 +5,7 @@
     "build": "vike build",
     "preview": "run-s build preview:wrangler",
     "drizzle:generate": "drizzle-kit generate",
-    "drizzle:migrate": "wrangler d1 migrations apply demo-db --local",
+    "drizzle:migrate": "wrangler d1 migrations apply YOUR_DATABASE_NAME --local",
     "drizzle:studio": "drizzle-kit studio",
     "preview:wrangler": "wrangler pages dev",
     "deploy:wrangler": "wrangler pages deploy",
