@@ -3,7 +3,6 @@ import { pages } from "vike-cloudflare"
 import { telefunc } from "telefunc/vite"
 import tailwindcss from "@tailwindcss/vite"
 import kaioken from "vite-plugin-kaioken"
-import devServer from "@hono/vite-dev-server"
 import { defineConfig } from "vite"
 import vike from "vike/plugin"
 
@@ -17,19 +16,6 @@ export default defineConfig({
   plugins: [
     vike(),
     kaioken(),
-    devServer({
-      entry: "./src/server/hono-entry.ts",
-      exclude: [
-        /^\/@.+$/,
-        /.*\.(ts|tsx|vue)($|\?)/,
-        /.*\.(s?css|less)($|\?)/,
-        /^\/favicon\.ico$/,
-        /.*\.(svg|png)($|\?)/,
-        /^\/(public|assets|static)\/.+/,
-        /^\/node_modules\/.*/,
-      ],
-      injectClientScript: false,
-    }),
     tailwindcss(),
     telefunc(),
     pages({
