@@ -1,6 +1,5 @@
 import { Telefunc, telefunc } from "telefunc"
 import type { Get, UniversalHandler } from "@universal-middleware/core"
-import type { D1Database } from "@cloudflare/workers-types"
 
 export const telefuncHandler: Get<[], UniversalHandler> =
   () => async (request, context, runtime) => {
@@ -10,11 +9,7 @@ export const telefuncHandler: Get<[], UniversalHandler> =
       body: await request.text(),
       context: {
         ...(context as Telefunc.Context),
-        ...(runtime as {
-          runtime: "workerd"
-          adapter: "cloudflare-pages"
-          env?: { DB: D1Database }
-        }),
+        ...runtime,
       },
     })
     const { body, statusCode, contentType } = httpResponse

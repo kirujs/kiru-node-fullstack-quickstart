@@ -11,11 +11,7 @@
     "moduleResolution": "Bundler",
     "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": [
-      "vite/client",
-      "@cloudflare/workers-types",
-      "vike-cloudflare/types"
-    ],
+    "types": ["vite/client"],
     "jsx": "preserve",
     "jsxImportSource": "kaioken",
     "paths": {

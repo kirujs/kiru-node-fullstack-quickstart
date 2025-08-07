@@ -1,8 +1,5 @@
 ## Contents
 
-- [_Cloudflare D1_](#cloudflare-d1)
-  - [Setup](#setup)
-
 - [_Drizzle_](#drizzle)
 
 - [_Better Auth_](#better-auth)
@@ -14,30 +11,9 @@
   - [SSR](#ssr)
   - [HTML Streaming](#html-streaming)
 
-## _Cloudflare D1_
-
-### Setup
-
-Create a D1 database with the following command:
-
-```sh
-wrangler d1 create <your-db-name>
-```
-
-Then, copy the output to `wrangler.toml`.
-
-Finally, update the `d1:migrate` script (in `package.json`) to replace `YOUR_DATABASE_NAME`, and execute it.
-
-> \[!NOTE]
-> For reference, a good database name is:
->
-> - Typically a combination of ASCII characters, shorter than 32 characters, and uses dashes (-) instead of spaces.
-> - Descriptive of the use-case and environment. For example, “staging-db-web” or “production-db-backend”.
-> - Only used for describing the database, and is not directly referenced in code.
-
 ## _Drizzle_
 
-Run the following commands to create the database:
+First, ensure that `DATABASE_URL` is configured in `.env` file, then create the database:
 
 ```bash
 pnpm drizzle:generate # a script that executes drizzle-kit generate.
@@ -55,7 +31,7 @@ Read more on [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
 
 Better Auth is a library for authentication and authorization. It's already wired up with the app, so you can use it out of the box - just set up the `AUTH_SECRET` & `BASE_URL` environment variables.
 
-GitHub authentication is also set up out of the box - just create a GitHub app and set up the `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` environment variables.
+GitHub OAuth is also set up out of the box - just create a GitHub app and set up the `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` environment variables.
 
 ## _Kaioken+Vike_
 

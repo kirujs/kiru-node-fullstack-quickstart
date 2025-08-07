@@ -38,17 +38,13 @@ function AuthSection({ user }: { user?: User }) {
           href="#"
           onclick={() => {
             signingOut.value = true
-            authClient
-              .signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    navigate("/")
-                  },
+            authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  navigate("/")
                 },
-              })
-              .finally(() => {
-                signingOut.value = false
-              })
+              },
+            })
           }}
         >
           {signingOut.value ? "Signing out..." : "Logout"}

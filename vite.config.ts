@@ -4,7 +4,6 @@ import vike from "vike/plugin"
 import kaioken from "vite-plugin-kaioken"
 import tailwindcss from "@tailwindcss/vite"
 import { telefunc } from "telefunc/vite"
-import { pages } from "vike-cloudflare"
 import devServer from "@hono/vite-dev-server"
 
 export default defineConfig({
@@ -19,14 +18,9 @@ export default defineConfig({
     kaioken(),
     tailwindcss(),
     telefunc(),
-    pages({
-      server: {
-        kind: "hono",
-        entry: "./src/server/hono-entry.ts",
-      },
-    }),
     devServer({
       entry: "./src/server/hono-entry.ts",
+      ignoreWatching: [/\.db/],
       exclude: [
         /^\/@.+$/,
         /.*\.(ts|tsx)($|\?)/,
@@ -36,18 +30,7 @@ export default defineConfig({
         /^\/(public|assets|static)\/.+/,
         /^\/node_modules\/.*/,
       ],
-      /**
-       * We're disabling Hono's hot update handler since vite-plugin-kaioken deals with HMR.
-       * Hono's plugin should still take care of server module reloads, though.
-       */
-      handleHotUpdate: () => {},
       injectClientScript: false,
     }),
   ],
-  build: {
-    rollupOptions: {
-      external: ["wrangler"],
-    },
-    target: "es2022",
-  },
 })

@@ -2,11 +2,11 @@
 
 import type { User } from "better-auth"
 import { Abort, getContext } from "telefunc"
-import type { dbD1 } from "$/database/drizzle/db"
+import type { DBType } from "$/database/drizzle/db"
 import * as drizzleQueries from "$/database/drizzle/queries/todos"
 import { TodoItem } from "$/database/drizzle/schema/todos"
 
-function getCRUDContext(): { db: ReturnType<typeof dbD1>; user: User } {
+function getCRUDContext(): { db: DBType; user: User } {
   const { db, session } = getContext()
   if (!session) throw Abort({ notLoggedIn: true })
   return { db, user: session.user }

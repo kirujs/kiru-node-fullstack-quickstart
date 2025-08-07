@@ -3,18 +3,20 @@ import { authClient } from "$/app/global/auth-client"
 import { getFormValues, formState } from "./state"
 
 const authReqOptions = {
-  onSuccess: () => navigate("/"),
+  onSuccess: () => {
+    formState.error.value = null
+    navigate("/")
+  },
   onError: (err: { error: { message: string } }) => {
     formState.error.value = err.error.message
   },
 }
 
 export const handleGithubSignIn = () => {
-  authClient.signIn
-    .social({
-      provider: "github",
-    })
-    .then(() => navigate("/"))
+  formState.submitting.value = true
+  authClient.signIn.social({
+    provider: "github",
+  })
 }
 
 export const handleForgotPassword = () => {

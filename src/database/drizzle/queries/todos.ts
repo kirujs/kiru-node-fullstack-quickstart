@@ -1,24 +1,16 @@
 import { and, eq } from "drizzle-orm"
 import { TodoItem, todoTable } from "../schema/todos"
-import { dbD1 } from "../db"
+import type { DBType } from "../db"
 
-export function insertTodo(
-  db: ReturnType<typeof dbD1>,
-  userId: string,
-  text: string
-) {
+export function insertTodo(db: DBType, userId: string, text: string) {
   return db.insert(todoTable).values([{ text, userId }]).returning()
 }
 
-export async function getAllTodos(db: ReturnType<typeof dbD1>, userId: string) {
+export async function getAllTodos(db: DBType, userId: string) {
   return db.select().from(todoTable).where(eq(todoTable.userId, userId))
 }
 
-export function updateTodo(
-  db: ReturnType<typeof dbD1>,
-  userId: string,
-  { id, text }: TodoItem
-) {
+export function updateTodo(db: DBType, userId: string, { id, text }: TodoItem) {
   return db
     .update(todoTable)
     .set({ text })
@@ -26,11 +18,7 @@ export function updateTodo(
     .returning()
 }
 
-export function deleteTodo(
-  db: ReturnType<typeof dbD1>,
-  userId: string,
-  id: string
-) {
+export function deleteTodo(db: DBType, userId: string, id: string) {
   return db
     .delete(todoTable)
     .where(and(eq(todoTable.id, id)))

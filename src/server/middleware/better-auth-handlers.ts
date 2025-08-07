@@ -17,7 +17,7 @@ export const betterAuthDbMiddleware: Get<[], UniversalMiddleware> =
       baseURL: env.BASE_URL,
       secret: env.AUTH_SECRET,
       database: drizzleAdapter(context.db, {
-        provider: "sqlite", // or "mysql", "sqlite"
+        provider: "sqlite", // or "mysql", "pg"
         schema: authSchema,
       }),
       session: {
