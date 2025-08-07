@@ -2,6 +2,8 @@ import { dbSqlite } from "$/database/drizzle/db"
 import { D1Database } from "@cloudflare/workers-types"
 import { betterAuth, Session, User } from "better-auth"
 
+type SessionContext = { session: Session; user: User } | null
+
 declare global {
   namespace Vike {
     interface PageContext {
@@ -18,7 +20,7 @@ declare global {
 
       routeParams: Record<string, string>
       data: Record<string, unknown>
-      session: { session: Session; user: User } | null
+      session: SessionContext
     }
 
     interface PageContextServer {
@@ -33,10 +35,7 @@ declare module "telefunc" {
     interface Context {
       db: DBType
       betterAuth: ReturnType<typeof betterAuth>
-      session: null | {
-        session: Session
-        user: User
-      }
+      session: SessionContext
     }
   }
 }
@@ -46,10 +45,7 @@ declare global {
     interface Context {
       db: DBType
       betterAuth: ReturnType<typeof betterAuth>
-      session: null | {
-        session: Session
-        user: User
-      }
+      session: SessionContext
     }
   }
 }
