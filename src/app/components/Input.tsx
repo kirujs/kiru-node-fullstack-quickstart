@@ -1,4 +1,4 @@
-import { type ElementProps, unwrap } from "kaioken"
+import { type ElementProps, unwrap } from "kiru"
 import { cls } from "../utils/tw-merge"
 
 export function Input({ className, ...props }: ElementProps<"input">) {

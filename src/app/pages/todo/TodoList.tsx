@@ -1,4 +1,4 @@
-import { useCallback, useComputed, useSignal } from "kaioken"
+import { useCallback, useComputed, useSignal } from "kiru"
 import { onCreateTodo, onDeleteTodo, onUpdateTodo } from "./TodoList.telefunc"
 import type { TodoItem } from "$/database/drizzle/schema/todos"
 
@@ -102,7 +102,7 @@ export function TodoList({
   )
 }
 
-const TodoItemView: Kaioken.FC<{
+const TodoItemView: Kiru.FC<{
   todoItem: OptimisticTodoItem
   removeItem: (todoItem: TodoItem) => Promise<void>
   saveItem: (todoItem: TodoItem) => Promise<void>

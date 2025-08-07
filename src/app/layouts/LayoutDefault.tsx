@@ -1,5 +1,5 @@
 import "./style.css"
-import { useSignal } from "kaioken"
+import { useSignal } from "kiru"
 import { navigate } from "vike/client/router"
 import { type User } from "better-auth"
 

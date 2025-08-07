@@ -1,5 +1,5 @@
-import { Derive, ElementProps, unwrap } from "kaioken"
-import { className as cls } from "kaioken/utils"
+import { Derive, ElementProps, unwrap } from "kiru"
+import { className as cls } from "kiru/utils"
 import { Button } from "$/app/components/Button"
 import { Input } from "$/app/components/Input"
 import { GithubIcon } from "$/app/components/icons/GithubIcon"

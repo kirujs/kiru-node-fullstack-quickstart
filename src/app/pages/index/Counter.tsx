@@ -1,4 +1,4 @@
-import { useSignal } from "kaioken"
+import { useSignal } from "kiru"
 import { Button } from "$/app/components/Button"
 
 export function Counter() {

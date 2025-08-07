@@ -4,7 +4,7 @@
 
 - [_Better Auth_](#better-auth)
 
-- [_Kaioken+Vike_](#kaioken)
+- [_Kiru+Vike_](#kiru)
   - [`/pages/+config.ts`](#pagesconfigts)
   - [Routing](#routing)
   - [`/pages/_error/+Page.jsx`](#pages_errorpagejsx)
@@ -33,9 +33,9 @@ Better Auth is a library for authentication and authorization. It's already wire
 
 GitHub OAuth is also set up out of the box - just create a GitHub app and set up the `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` environment variables.
 
-## _Kaioken+Vike_
+## _Kiru+Vike_
 
-This app is ready to start. It's powered by [Vike](https://vike.dev) and [Kaioken](https://kaioken.dev).
+This app is ready to start. It's powered by [Vike](https://vike.dev) and [Kiru](https://kirujs.dev).
 
 ### `/pages/+config.ts`
 

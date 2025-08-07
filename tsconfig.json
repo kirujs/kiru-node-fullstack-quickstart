@@ -13,7 +13,7 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
     "jsx": "preserve",
-    "jsxImportSource": "kaioken",
+    "jsxImportSource": "kiru",
     "paths": {
       "$/*": ["./src/*"]
     }

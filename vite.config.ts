@@ -1,7 +1,7 @@
 import path from "path"
 import { defineConfig } from "vite"
 import vike from "vike/plugin"
-import kaioken from "vite-plugin-kaioken"
+import kiru from "vite-plugin-kiru"
 import tailwindcss from "@tailwindcss/vite"
 import { telefunc } from "telefunc/vite"
 import devServer from "@hono/vite-dev-server"
@@ -15,7 +15,7 @@ export default defineConfig({
   },
   plugins: [
     vike(),
-    kaioken(),
+    kiru(),
     tailwindcss(),
     telefunc(),
     devServer({

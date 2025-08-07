@@ -1,4 +1,4 @@
-import { type ElementProps } from "kaioken"
+import { type ElementProps } from "kiru"
 
 export function Loader(props: ElementProps<"div">) {
   return (

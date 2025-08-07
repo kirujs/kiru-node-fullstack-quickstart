@@ -15,5 +15,5 @@ function getTitle(pageContext: PageContext) {
   if (typeof val === "function") {
     return val(pageContext)
   }
-  return val || "Vite + Vike + TS + Kaioken"
+  return val || "Vite + Vike + TS + Kiru"
 }

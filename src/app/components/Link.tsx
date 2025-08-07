@@ -1,4 +1,4 @@
-import { type ElementProps, unwrap } from "kaioken"
+import { type ElementProps, unwrap } from "kiru"
 import { usePageContext } from "$/app/context/pageContext"
 
 export function Link({ href, children, ...rest }: ElementProps<"a">) {

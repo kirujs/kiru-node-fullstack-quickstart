@@ -6,7 +6,7 @@ export default function Page() {
   setConfig({ title: "Hello world!" })
   return (
     <>
-      <h1 className="font-bold text-3xl pb-4">My Vite + Vike + Kaioken app</h1>
+      <h1 className="font-bold text-3xl pb-4">My Vite + Vike + Kiru app</h1>
       <div>
         <Counter />
       </div>
