@@ -1,14 +1,12 @@
 // Environment: server
-import type { OnRenderHtmlAsync } from "vike/types"
+import type { PageContextServer } from "vike/types"
 import { dangerouslySkipEscape, escapeInject } from "vike/server"
 import { renderToString } from "kiru"
 import { getTitle } from "./utils"
 import { App } from "./App"
 
-export const onRenderHtml: OnRenderHtmlAsync = async (
-  pageContext
-): ReturnType<OnRenderHtmlAsync> => {
-  const pageHtml = renderToString(App, { pageContext })
+export const onRenderHtml = (pageContext: PageContextServer) => {
+  const pageHtml = renderToString(<App pageContext={pageContext} />)
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>
