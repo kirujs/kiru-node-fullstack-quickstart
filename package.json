@@ -19,7 +19,7 @@
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.4",
     "hono": "^4.9.4",
-    "kiru": "^0.48.2",
+    "kiru": "^0.48.3",
     "tailwind-merge": "^3.3.1",
     "telefunc": "^0.2.10",
     "vike": "^0.4.237"
