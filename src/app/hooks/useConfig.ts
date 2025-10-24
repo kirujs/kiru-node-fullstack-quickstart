@@ -2,11 +2,11 @@ import { usePageContext } from "$/app/context/pageContext"
 import { getPageContext } from "vike/getPageContext"
 import { PageContext } from "vike/types"
 
-type ConfigFromHook = {
+interface ConfigFromHook {
   title?: string
 }
 
-export type PageContextInternal = {
+export interface PageContextInternal {
   _configFromHook?: ConfigFromHook
   _headAlreadySet?: boolean
 }

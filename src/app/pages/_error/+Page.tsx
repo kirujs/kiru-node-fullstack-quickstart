@@ -2,6 +2,7 @@ import { usePageContext } from "$/app/context/pageContext"
 
 export default function Page() {
   const { is404 } = usePageContext()
+
   if (is404) {
     return (
       <>
@@ -10,6 +11,7 @@ export default function Page() {
       </>
     )
   }
+
   return (
     <>
       <h1>500 Internal Server Error</h1>

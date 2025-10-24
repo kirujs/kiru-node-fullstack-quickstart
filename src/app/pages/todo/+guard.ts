@@ -1,7 +1,7 @@
 import { redirect } from "vike/abort"
-import { GuardSync } from "vike/types"
+import { PageContextServer } from "vike/types"
 
-export const guard: GuardSync = async (pageContext) => {
+export const guard = (pageContext: PageContextServer) => {
   if (!pageContext.session) {
     throw redirect("/login")
   }

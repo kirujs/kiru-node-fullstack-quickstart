@@ -7,27 +7,40 @@ import { usePageContext } from "../context/pageContext"
 import { authClient } from "../global/auth-client"
 import { Link } from "../components/Link.js"
 
-export default function LayoutDefault({
-  children,
-}: {
+interface LayoutDefaultProps {
   children: JSX.Children
-}) {
+}
+export default function LayoutDefault({ children }: LayoutDefaultProps) {
   const { session } = usePageContext()
   return (
     <div className={"flex max-w-5xl m-auto"}>
-      <Sidebar>
-        <Logo />
+      <div
+        id="sidebar"
+        className={"p-5 flex flex-col shrink-0 border-r-2 border-r-gray-200/20"}
+      >
+        <div className={"p-5 mb-2"}>
+          <a href="/">
+            <img src="/logo.svg" height={64} width={64} alt="logo" />
+          </a>
+        </div>
         <Link href="/">Welcome</Link>
         {session && <Link href="/todo">Todo</Link>}
         <Link href="/star-wars">Data Fetching</Link>
         <AuthSection user={session?.user} />
-      </Sidebar>
-      <Content>{children}</Content>
+      </div>
+      <div id="page-container" className="w-full">
+        <div id="page-content" className="p-5 pb-12 min-h-screen flex flex-col">
+          {children}
+        </div>
+      </div>
     </div>
   )
 }
 
-function AuthSection({ user }: { user?: User }) {
+interface AuthSectionProps {
+  user?: User
+}
+function AuthSection({ user }: AuthSectionProps) {
   const signingOut = useSignal(false)
   if (user) {
     return (
@@ -54,35 +67,4 @@ function AuthSection({ user }: { user?: User }) {
   }
 
   return <Link href="/login">Login</Link>
-}
-
-function Sidebar({ children }: { children: JSX.Children }) {
-  return (
-    <div
-      id="sidebar"
-      className={"p-5 flex flex-col shrink-0 border-r-2 border-r-gray-200/20"}
-    >
-      {children}
-    </div>
-  )
-}
-
-function Content({ children }: { children: JSX.Children }) {
-  return (
-    <div id="page-container" className="w-full">
-      <div id="page-content" className="p-5 pb-12 min-h-screen flex flex-col">
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function Logo() {
-  return (
-    <div className={"p-5 mb-2"}>
-      <a href="/">
-        <img src="/logo.svg" height={64} width={64} alt="logo" />
-      </a>
-    </div>
-  )
 }

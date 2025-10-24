@@ -1,7 +1,7 @@
 import { type ElementProps, unwrap } from "kiru"
 import { cls } from "../utils/tw-merge"
 
-type ButtonProps = ElementProps<"button"> & {
+interface ButtonProps extends ElementProps<"button"> {
   variant?: "primary" | "secondary"
 }
 
