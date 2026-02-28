@@ -1,4 +1,4 @@
-import { useCallback, useComputed, useSignal } from "kiru"
+import { computed, For, signal } from "kiru"
 import { onCreateTodo, onDeleteTodo, onUpdateTodo } from "./TodoList.telefunc"
 import type { TodoItem } from "$/database/drizzle/schema/todos"
 
@@ -9,10 +9,10 @@ export function TodoList({
 }: {
   initialTodoItems: TodoItem[]
 }) {
-  const todoItems = useSignal<OptimisticTodoItem[]>(initialTodoItems)
-  const newTodo = useSignal("")
+  const todoItems = signal<OptimisticTodoItem[]>(initialTodoItems)
+  const newTodo = signal("")
 
-  const removeItem = useCallback(async (todoItem: TodoItem) => {
+  const removeItem = async (todoItem: TodoItem) => {
     try {
       todoItems.value = todoItems.value.filter(
         (item) => item.id !== todoItem.id
@@ -28,9 +28,9 @@ export function TodoList({
         item.id === todoItem.id ? todoItem : item
       )
     }
-  }, [])
+  }
 
-  const saveItem = useCallback(async (todoItem: TodoItem) => {
+  const saveItem = async (todoItem: TodoItem) => {
     try {
       const [res] = await onUpdateTodo(todoItem)
       if (!res) throw new Error("Failed to update todo")
@@ -40,9 +40,9 @@ export function TodoList({
     } catch (error) {
       console.error(error)
     }
-  }, [])
+  }
 
-  const addItem = useCallback(async (ev: Event) => {
+  const addItem = async (ev: Kiru.FormEvent) => {
     ev.preventDefault()
     // Optimistic UI update
     const tempId = crypto.randomUUID()
@@ -67,16 +67,18 @@ export function TodoList({
       // rollback
       todoItems.value = todoItems.value.filter((item) => item.id !== tempId)
     }
-  }, [])
+  }
 
-  return (
+  return () => (
     <>
       <ul className="flex flex-col gap-1 mb-1">
-        {todoItems.value.map((todoItem) => (
-          <li key={todoItem.id}>
-            <TodoItemView {...{ todoItem, removeItem, saveItem }} />
-          </li>
-        ))}
+        <For each={todoItems}>
+          {(todoItem) => (
+            <li key={todoItem.id}>
+              <TodoItemView {...{ todoItem, removeItem, saveItem }} />
+            </li>
+          )}
+        </For>
       </ul>
       <div>
         <form onsubmit={addItem}>
@@ -102,15 +104,20 @@ export function TodoList({
   )
 }
 
-const TodoItemView: Kiru.FC<{
+interface TodoItemViewProps {
   todoItem: OptimisticTodoItem
   removeItem: (todoItem: TodoItem) => Promise<void>
   saveItem: (todoItem: TodoItem) => Promise<void>
-}> = ({ todoItem, removeItem, saveItem }) => {
-  const itemText = useSignal(todoItem.text)
-  const isActionInProgress = useSignal(false)
+}
+const TodoItemView: Kiru.FC<TodoItemViewProps> = ({
+  todoItem,
+  removeItem,
+  saveItem,
+}) => {
+  const itemText = signal(todoItem.text)
+  const isActionInProgress = signal(false)
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     isActionInProgress.value = true
     try {
       await removeItem(todoItem)
@@ -119,9 +126,9 @@ const TodoItemView: Kiru.FC<{
     } finally {
       isActionInProgress.value = false
     }
-  }, [])
+  }
 
-  const handleSave = useCallback(async () => {
+  const handleSave = async () => {
     isActionInProgress.value = true
     try {
       await saveItem({ ...todoItem, text: itemText.peek() })
@@ -130,15 +137,15 @@ const TodoItemView: Kiru.FC<{
     } finally {
       isActionInProgress.value = false
     }
-  }, [])
+  }
 
-  const saveDisabled = useComputed(() => {
+  const saveDisabled = computed(() => {
     const inProgress = isActionInProgress.value
     const text = itemText.value
     return todoItem.text === text || inProgress
   })
 
-  return (
+  return ({ todoItem }) => (
     <div className={`flex gap-1 ${todoItem.optimistic ? "opacity-50" : ""}`}>
       <input bind:value={itemText} disabled={isActionInProgress} />
 

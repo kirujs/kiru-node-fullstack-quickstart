@@ -1,10 +1,10 @@
-import { useSignal } from "kiru"
+import { signal } from "kiru"
 import { Button } from "$/app/components/Button"
 
 export function Counter() {
-  const count = useSignal(0)
+  const count = signal(0)
 
-  return (
+  return () => (
     <Button type="button" onclick={() => count.value++}>
       Click me! ({count})
     </Button>

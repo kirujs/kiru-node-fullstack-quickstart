@@ -6,23 +6,18 @@ import { GithubIcon } from "$/app/components/icons/GithubIcon"
 import { Loader } from "$/app/components/Loader"
 
 import { formMode, formState } from "./state"
-import {
-  handleForgotPassword,
-  handleGithubSignIn,
-  handleSignIn,
-  handleSignUp,
-} from "./actions"
+import { handleGithubSignIn, handleSignIn, handleSignUp } from "./actions"
+
+const handleSubmit = async (event: Kiru.FormEvent) => {
+  event.preventDefault()
+  if (formMode.value === "login") {
+    handleSignIn()
+  } else {
+    handleSignUp()
+  }
+}
 
 export default function Page() {
-  const handleSubmit = async (event: Event) => {
-    event.preventDefault()
-    if (formMode.value === "login") {
-      handleSignIn()
-    } else {
-      handleSignUp()
-    }
-  }
-
   return (
     <div className="w-full grow flex items-center justify-center">
       <div className="w-xs max-w-lg p-4 rounded-lg flex flex-col gap-4 justify-center bg-white/5 border border-white/10">
@@ -84,22 +79,7 @@ export default function Page() {
             />
           </FormItem>
           <FormItem>
-            <div className="flex items-center justify-between">
-              <FormItemLabel htmlFor="password">Password</FormItemLabel>
-              <Derive from={formMode}>
-                {(mode) =>
-                  mode === "login" && (
-                    <button
-                      type="button"
-                      onclick={handleForgotPassword}
-                      className="text-neutral-400 hover:text-white hover:underline text-xs"
-                    >
-                      Forgot your password?
-                    </button>
-                  )
-                }
-              </Derive>
-            </div>
+            <FormItemLabel htmlFor="password">Password</FormItemLabel>
             <Input
               id="password"
               type="password"

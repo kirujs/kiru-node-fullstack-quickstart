@@ -19,15 +19,6 @@ export const handleGithubSignIn = () => {
   })
 }
 
-export const handleForgotPassword = () => {
-  formState.submitting.value = true
-  const { email } = getFormValues()
-
-  authClient
-    .forgetPassword({ email }, authReqOptions)
-    .finally(() => (formState.submitting.value = false))
-}
-
 export const handleSignUp = () => {
   formState.submitting.value = true
   const { name, email, password } = getFormValues()

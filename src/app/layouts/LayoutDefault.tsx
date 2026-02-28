@@ -1,5 +1,5 @@
 import "./style.css"
-import { useSignal } from "kiru"
+import { computed, signal } from "kiru"
 import { navigate } from "vike/client/router"
 import { type User } from "better-auth"
 
@@ -40,9 +40,15 @@ export default function LayoutDefault({ children }: LayoutDefaultProps) {
 interface AuthSectionProps {
   user?: User
 }
-function AuthSection({ user }: AuthSectionProps) {
-  const signingOut = useSignal(false)
-  if (user) {
+const AuthSection: Kiru.FC<AuthSectionProps> = () => {
+  const signingOut = signal(false)
+  const logOutText = computed(() =>
+    signingOut.value ? "Logging out..." : "Logout"
+  )
+
+  return ({ user }) => {
+    if (!user) return <Link href="/login">Login</Link>
+
     return (
       <div className="flex w-full p-2 my-2 flex-col border-2 border-neutral-300">
         <span className="font-bold">Logged in as: {user.name}</span>
@@ -53,18 +59,14 @@ function AuthSection({ user }: AuthSectionProps) {
             signingOut.value = true
             authClient.signOut({
               fetchOptions: {
-                onSuccess: () => {
-                  navigate("/")
-                },
+                onSuccess: () => navigate("/"),
               },
             })
           }}
         >
-          {signingOut.value ? "Signing out..." : "Logout"}
+          {logOutText}
         </Link>
       </div>
     )
   }
-
-  return <Link href="/login">Login</Link>
 }
