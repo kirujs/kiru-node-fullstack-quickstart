@@ -19,7 +19,7 @@
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "hono": "^4.11.7",
-    "kiru": "^1.1.2",
+    "kiru": "^1.2.1",
     "tailwind-merge": "^3.4.0",
     "telefunc": "^0.2.17",
     "vike": "^0.4.253"
@@ -34,6 +34,6 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
-    "vite-plugin-kiru": "^1.1.0"
+    "vite-plugin-kiru": "^1.2.1"
   }
 }
