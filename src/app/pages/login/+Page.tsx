@@ -28,21 +28,14 @@ export default function Page() {
                 <h1 className="text-2xl font-bold">
                   {mode === "login" ? "Login" : "Sign Up"}
                 </h1>
-                {mode === "login" ? (
-                  <button
-                    className="text-neutral-300 hover:text-white hover:underline"
-                    onclick={() => (formMode.value = "signup")}
-                  >
-                    Sign Up
-                  </button>
-                ) : (
-                  <button
-                    className="text-neutral-300 hover:text-white hover:underline"
-                    onclick={() => (formMode.value = "login")}
-                  >
-                    Login
-                  </button>
-                )}
+                <button
+                  className="text-neutral-300 hover:text-white hover:underline"
+                  onclick={() =>
+                    (formMode.value = mode === "login" ? "signup" : "login")
+                  }
+                >
+                  {mode === "login" ? "Sign Up" : "Login"}
+                </button>
               </>
             )}
           </Derive>

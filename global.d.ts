@@ -1,6 +1,6 @@
 import { dbSqlite } from "$/database/drizzle/db"
 import { D1Database } from "@cloudflare/workers-types"
-import { betterAuth, Session, User } from "better-auth"
+import { betterAuth, BetterAuthOptions, Session, User } from "better-auth"
 
 type SessionContext = { session: Session; user: User } | null
 
@@ -11,6 +11,7 @@ declare global {
       abortStatusCode?: number
       is404?: boolean
       urlPathname: string
+      $pathname: Kiru.Signal<string>
 
       config: {
         title: string | ((ctx: PageContext) => string)
@@ -21,7 +22,7 @@ declare global {
       routeParams: Record<string, string>
       data: Record<string, unknown>
       session: SessionContext
-      stream: import("node:stream").Readable
+      stream: ReadableStream
     }
 
     interface PageContextServer {
@@ -45,7 +46,7 @@ declare global {
   namespace Universal {
     interface Context {
       db: DBType
-      betterAuth: ReturnType<typeof betterAuth>
+      betterAuth: ReturnType<typeof betterAuth<any>>
       session: SessionContext
     }
   }

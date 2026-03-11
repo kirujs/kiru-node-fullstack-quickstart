@@ -4,12 +4,17 @@ import { dangerouslySkipEscape, escapeInject } from "vike/server"
 import { getTitle } from "./utils"
 import { App } from "./App"
 import { renderToReadableStream } from "kiru/ssr/server"
+import { Signal, signal } from "kiru"
 
 export const onRenderHtml = (pageContext: PageContextServer) => {
+  const pathname = signal(pageContext.urlPathname)
+
   const { immediate, stream } = renderToReadableStream(
-    <App pageContext={pageContext} />
+    <App pageContext={{ ...pageContext, $pathname: pathname }} />
   )
+  Signal.dispose(pathname)
   pageContext.stream = stream
+
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>

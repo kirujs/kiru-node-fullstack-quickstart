@@ -3,8 +3,9 @@ import type { Get, UniversalHandler } from "@universal-middleware/core"
 
 export const telefuncHandler: Get<[], UniversalHandler> =
   () => async (request, context, runtime) => {
+    const { pathname } = new URL(request.url)
     const httpResponse = await telefunc({
-      url: request.url.toString(),
+      url: pathname,
       method: request.method,
       body: await request.text(),
       context: {

@@ -17,7 +17,7 @@ export const vikeHandler: Get<[], UniversalHandler> =
     const { body, statusCode, headers } = httpResponse
 
     const readable = new ReadableStream<Uint8Array>({
-      start(controller) {
+      async start(controller) {
         // write initial HTML immediately
         if (body) {
           controller.enqueue(encoder.encode(body))
@@ -25,9 +25,20 @@ export const vikeHandler: Get<[], UniversalHandler> =
 
         // write lazy chunks as they resolve
         if (stream) {
-          stream.on("data", (chunk) => controller.enqueue(chunk))
-          stream.on("end", () => controller.close())
-          stream.on("error", (err) => controller.error(err))
+          try {
+            const reader = stream.getReader()
+            while (true) {
+              const { done, value } = await reader.read()
+              if (done) break
+              controller.enqueue(
+                typeof value === "string" ? encoder.encode(value) : value
+              )
+            }
+          } catch (err) {
+            controller.error(err)
+          } finally {
+            controller.close()
+          }
         } else {
           controller.close()
         }

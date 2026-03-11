@@ -22,7 +22,6 @@ app.use(createMiddleware(betterAuthSessionMiddleware)())
  * Auth.js route
  * @link {@see https://authjs.dev/getting-started/installation}
  **/
-//app.use("/api/auth/**", createHandler(authjsHandler)())
 app.on(["POST", "GET"], "/api/auth/**", createHandler(betterAuthHandlers)())
 
 app.post("/_telefunc", createHandler(telefuncHandler)())

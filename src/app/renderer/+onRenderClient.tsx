@@ -1,20 +1,23 @@
 // https://vike.dev/onRenderClient
 import type { PageContextClient } from "vike/types"
-import type { AppContext } from "kiru"
+import { signal, type AppHandle } from "kiru"
 import { hydrate } from "kiru/ssr/client"
 import { getTitle } from "./utils"
 import { App } from "./App"
 
-let appContext: AppContext | undefined
-
+let appHandle: AppHandle | undefined
+const pathname = signal<string>(null!)
 export const onRenderClient = (pageContext: PageContextClient) => {
   const container = document.getElementById("page-root")!
+  const ctx = { ...pageContext, $pathname: pathname }
 
-  if (pageContext.isHydration || !appContext) {
-    appContext = hydrate(<App pageContext={pageContext} />, container)
+  if (ctx.isHydration || !appHandle) {
+    pathname.value = ctx.urlPathname
+    appHandle = hydrate(<App pageContext={ctx} />, container)
     return
   }
 
-  document.title = getTitle(pageContext)
-  appContext.render(<App pageContext={pageContext} />)
+  document.title = getTitle(ctx)
+  appHandle.render(<App pageContext={ctx} />)
+  pathname.value = ctx.urlPathname
 }
